@@ -95,6 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuToggle         = $('menuToggle');
   const playerBar          = $('playerBar');
 
+  // Mobile controls
+  const mobilePrevBtn      = $('mobilePrevBtn');
+  const mobilePlayPauseBtn = $('mobilePlayPauseBtn');
+  const mobileNextBtn      = $('mobileNextBtn');
+
   // ═══════════════════════════════════════════════════════════════════════════
   // STATE
   // ═══════════════════════════════════════════════════════════════════════════
@@ -285,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      tempAudio.src = track.file;
+      tempAudio.src = encodeURIComponent(track.file);
     });
   };
 
@@ -313,8 +318,8 @@ document.addEventListener('DOMContentLoaded', () => {
     currentTrackIndex = index;
     const track = TRACKS[index];
 
-    // Set audio source and play
-    audioPlayer.src = track.file;
+    // Set audio source and play (encodeURIComponent handles + and () in filenames)
+    audioPlayer.src = encodeURIComponent(track.file);
     audioPlayer.play().then(() => {
       isPlaying = true;
       updatePlayPauseIcon();
@@ -461,6 +466,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playPauseBtn) {
       playPauseBtn.innerHTML = isPlaying ? ICONS.pause : ICONS.play;
     }
+    // Also update mobile play/pause button
+    if (mobilePlayPauseBtn) {
+      mobilePlayPauseBtn.innerHTML = isPlaying ? ICONS.pause : ICONS.play;
+    }
   };
 
   /** Update player bar info (art, track name, artist) */
@@ -480,7 +489,8 @@ document.addEventListener('DOMContentLoaded', () => {
     playerBar.classList.remove('hidden');
     playerBar.classList.add('visible');
 
-    // Adjust main content padding
+    // Adjust main content paddingy
+  
     const mainContent = document.querySelector('.main-content') || document.querySelector('main');
     if (mainContent) {
       mainContent.style.paddingBottom = `${playerBar.offsetHeight + 16}px`;
@@ -890,6 +900,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (prevBtn) prevBtn.addEventListener('click', playPrev);
   if (nextBtn) nextBtn.addEventListener('click', playNext);
 
+  // Mobile player controls
+  if (mobilePlayPauseBtn) mobilePlayPauseBtn.addEventListener('click', togglePlayPause);
+  if (mobilePrevBtn) mobilePrevBtn.addEventListener('click', playPrev);
+  if (mobileNextBtn) mobileNextBtn.addEventListener('click', playNext);
+
   // ═══════════════════════════════════════════════════════════════════════════
   // AUDIO EVENTS
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1079,6 +1094,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (prevBtn) prevBtn.innerHTML = ICONS.prev;
     if (nextBtn) nextBtn.innerHTML = ICONS.next;
     if (playerLikeBtn) playerLikeBtn.innerHTML = ICONS.heartOutline;
+
+    // Initialize mobile control icons
+    if (mobilePrevBtn) mobilePrevBtn.innerHTML = ICONS.prev;
+    if (mobilePlayPauseBtn) mobilePlayPauseBtn.innerHTML = ICONS.play;
+    if (mobileNextBtn) mobileNextBtn.innerHTML = ICONS.next;
 
     // Set initial player album art
     if (playerAlbumArt) playerAlbumArt.src = ALBUM_ART;

@@ -1035,6 +1035,18 @@ img {
   align-items: center;
 }
 
+/* Invisible expanded touch/click area for easier interaction */
+.progress-bar-wrapper::before,
+#progressBarWrapper::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  bottom: -14px;
+  left: -4px;
+  right: -4px;
+  z-index: 1;
+}
+
 .progress-bar-wrapper:hover,
 #progressBarWrapper:hover {
   height: 6px;
@@ -1166,6 +1178,11 @@ img {
     transform: translateX(0);
   }
 
+  /* Push sidebar logo text right so it doesn't overlap the hamburger menu */
+  .sidebar-logo {
+    padding-left: 68px;
+  }
+
   .menu-toggle,
   #menuToggle {
     display: flex;
@@ -1203,6 +1220,24 @@ img {
   .track-list-section {
     padding: 0 24px 120px;
   }
+}
+
+/* — Mobile Controls (hidden by default, shown on mobile) — */
+.mobile-controls {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.mobile-controls .mobile-ctrl {
+  width: 32px;
+  height: 32px;
+}
+
+.mobile-controls .mobile-ctrl svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* ────────────────────────────────────────────────────────────
@@ -1250,23 +1285,64 @@ img {
 
   .track-list-header {
     padding: 8px 8px;
+    position: relative;
+    z-index: auto;
   }
 
   .track-item {
     padding: 8px 8px;
   }
 
-  /* Player bar — simplified */
+  /* Player bar — mobile layout with progress bar */
   .player-bar,
   #playerBar {
-    grid-template-columns: 1fr 1fr;
-    height: 64px;
-    padding: 0 12px;
-    --player-height: 64px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    height: auto;
+    padding: 8px 12px 6px;
+    --player-height: 84px;
+    gap: 4px;
   }
 
+  /* Show player-center but only the progress bar */
   .player-center {
+    display: flex;
+    max-width: 100%;
+    gap: 4px;
+  }
+
+  /* Hide the desktop playback buttons row on mobile */
+  .player-buttons {
     display: none;
+  }
+
+  .player-progress {
+    gap: 6px;
+  }
+
+  /* Mobile: thicker bar, always-visible handle, green color */
+  .progress-bar-wrapper,
+  #progressBarWrapper {
+    height: 6px;
+  }
+
+  .progress-bar-wrapper::before,
+  #progressBarWrapper::before {
+    top: -100px;
+    bottom: -18px;
+  }
+
+  .progress-bar,
+  #progressBar {
+    background: var(--accent-green);
+  }
+
+  .progress-handle,
+  #progressHandle {
+    opacity: 1;
+    width: 12px;
+    height: 12px;
+    right: -8px;
   }
 
   .player-right {
@@ -1275,7 +1351,20 @@ img {
 
   .player-info {
     grid-column: 1 / -1;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  /* Show mobile playback controls */
+  .mobile-controls {
+    display: flex;
+    margin-left: auto;
+  }
+
+  /* Hide like button on mobile to save space */
+  .player-like-btn,
+  #playerLikeBtn {
+    display: none;
   }
 
   .player-album-art,
