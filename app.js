@@ -583,9 +583,13 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Progress bar click to seek
+  // FIX: Added e.target check — only seek if the click actually landed on
+  // the progress bar wrapper or its children (progressBar, progressHandle),
+  // not on control buttons whose events might bubble through the ::before overlay.
   if (progressBarWrapper) {
     progressBarWrapper.addEventListener('click', (e) => {
-      if (!isDraggingProgress) {
+      // Guard: Only seek if the click target is inside the progress bar area
+      if (!isDraggingProgress && progressBarWrapper.contains(e.target)) {
         seekFromPosition(e.clientX);
       }
     });
@@ -635,8 +639,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Also allow dragging from the progress bar wrapper itself (touch)
+  // FIX: Added e.target check so touches on overlapping controls (due to the
+  // ::before pseudo-element) don't trigger seeking.
   if (progressBarWrapper) {
     progressBarWrapper.addEventListener('touchstart', (e) => {
+      // Guard: Only seek if the touch target is actually within the progress bar
+      if (!progressBarWrapper.contains(e.target)) return;
+
       e.preventDefault();
       isDraggingProgress = true;
       const touch = e.touches[0];
@@ -894,16 +903,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ═══════════════════════════════════════════════════════════════════════════
   // PLAYER CONTROLS EVENT LISTENERS
+  // FIX: Added stopPropagation() to all control button handlers so that
+  // click/touch events on buttons cannot bubble up to the progress bar wrapper
+  // (which would cause unwanted seeking via its ::before pseudo-element overlay).
   // ═══════════════════════════════════════════════════════════════════════════
 
-  if (playPauseBtn) playPauseBtn.addEventListener('click', togglePlayPause);
-  if (prevBtn) prevBtn.addEventListener('click', playPrev);
-  if (nextBtn) nextBtn.addEventListener('click', playNext);
+  if (playPauseBtn) playPauseBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePlayPause();
+  });
+  if (prevBtn) prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    playPrev();
+  });
+  if (nextBtn) nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    playNext();
+  });
 
   // Mobile player controls
-  if (mobilePlayPauseBtn) mobilePlayPauseBtn.addEventListener('click', togglePlayPause);
-  if (mobilePrevBtn) mobilePrevBtn.addEventListener('click', playPrev);
-  if (mobileNextBtn) mobileNextBtn.addEventListener('click', playNext);
+  if (mobilePlayPauseBtn) mobilePlayPauseBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePlayPause();
+  });
+  if (mobilePrevBtn) mobilePrevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    playPrev();
+  });
+  if (mobileNextBtn) mobileNextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    playNext();
+  });
 
   // ═══════════════════════════════════════════════════════════════════════════
   // AUDIO EVENTS

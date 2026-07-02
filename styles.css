@@ -1326,10 +1326,13 @@ img {
     height: 6px;
   }
 
+  /* FIX: Reduced from top:-100px to top:-14px. The old value created a
+     massive invisible overlay that covered the play/pause button above,
+     causing clicks on controls to be intercepted as progress bar seeks. */
   .progress-bar-wrapper::before,
   #progressBarWrapper::before {
-    top: -100px;
-    bottom: -18px;
+    top: -14px;
+    bottom: -14px;
   }
 
   .progress-bar,
